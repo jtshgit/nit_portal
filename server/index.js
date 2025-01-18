@@ -75,10 +75,10 @@ app.get('/getcontent', async (req, res) => {
     try {
         let response = {};
         if (d) {
-            response = await axios.get("http://127.0.0.1:5000/content?y=" + y + "&m=" + m + "&d=" + d);
+            response = await axios.get("https://nit-python-web.vercel.app/content?y=" + y + "&m=" + m + "&d=" + d);
 
         } else {
-            response = await axios.get("http://127.0.0.1:5000/content?y=" + y + "&m=" + m);
+            response = await axios.get("https://nit-python-web.vercel.app/content?y=" + y + "&m=" + m);
 
         }
         res.json({ success: true, data: response.data });  // Use response.data to send the actual content
