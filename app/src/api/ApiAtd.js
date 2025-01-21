@@ -32,9 +32,13 @@ export const resetOtpCheck = async (otp, email) => {
 export const login = async (email, password) => {
     return await axios.post(`${API_URL}/login`, { email, password }, { withCredentials: true });
 };
-export const submitForm = async (name, type, url, sem, date,set) => {
-    return await axios.post(`${API_URL}/updateform`, { name, type, url, sem , date,set}, { withCredentials: true });
+export const submitForm = async (name, type, url, sem, date,set, work,work2,branch) => {
+    return await axios.post(`${API_URL}/submitform`, { name, type, url, sem , date,set, work,work2,branch}, { withCredentials: true });
 };
+export const updateForm = async (id,name, type, url, sem, date,set, work,work2,branch) => {
+    return await axios.post(`${API_URL}/updateform`, {id, name, type, url, sem , date,set, work,work2,branch}, { withCredentials: true });
+};
+
 export const getContent = async (url) => {
     return await axios.get(url, { withCredentials: true });
 };

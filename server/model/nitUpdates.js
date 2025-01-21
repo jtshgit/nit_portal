@@ -15,7 +15,15 @@ const nitUpdates = new mongoose.Schema({
         default: 0
     },
     work:{
-        type: Number,
+        type: String,
+        default: 0
+    },
+    work2:{
+        type: String,
+        default: 0
+    },
+    branch:{
+        type: String,
         default: 0
     }
 });

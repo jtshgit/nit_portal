@@ -89,7 +89,7 @@ app.get('/getcontent', async (req, res) => {
 });
 
 app.post('/updateform', async (req, res) => {
-    const { name, type, url, sem, date, set } = req.body;
+    const {id, name, type, url, sem, date, set, work,work2,branch } = req.body;
     const token = req.cookies.token;
     if (!token) {
         return res.json({ success: false, error: 'Unauthorized', auth: false });
@@ -99,21 +99,31 @@ app.post('/updateform', async (req, res) => {
         if (verified) {
             const admin = await Admin.findOne({ email: verified.email })
             if (admin) {
-                let setup = 1;
+                let setup = 2;
                 if(admin.role === 3){
                     setup = 0;
                 }
-                const newUpdate = new nitUpdates({
-                    name: name,
-                    type: type,
-                    url: url,
-                    sem: sem,
-                    date: date,
-                    set: set,
-                    setup: setup
-                })
-                await newUpdate.save();
-                res.json({ success: true });  // Use response.data to send the actual content
+                if(admin.role === 2){
+                    setup = 1;
+                }
+                const updateddata = await nitUpdates.findOneAndUpdate(
+                    {_id: id }, // Query
+                    { $set: { name: name,
+                        type: type,
+                        url: url,
+                        sem: sem,
+                        date: date,
+                        set: set,
+                        setup: setup,
+                        work: work,
+                        work2: work2,
+                        branch: branch } },          // Update
+                    { returnDocument: "after", new: true } // Options to return the updated document
+                );
+                if(updateddata){
+                    res.json({ success: true, data: updateddata});
+                }else{
+                res.json({ success: false}); } // Use response.data to send the actual content
             } else {
                 res.json({ success: false });
             }
@@ -125,6 +135,49 @@ app.post('/updateform', async (req, res) => {
         }
 
     });
+app.post('/submitform', async (req, res) => {
+        const { name, type, url, sem, date, set, work,work2,branch } = req.body;
+        const token = req.cookies.token;
+        if (!token) {
+            return res.json({ success: false, error: 'Unauthorized', auth: false });
+        }
+        try {
+            const verified = jwt.verify(token, process.env.JWT_SECRET);
+            if (verified) {
+                const admin = await Admin.findOne({ email: verified.email })
+                if (admin) {
+                    let setup = 2;
+                    if(admin.role === 3){
+                        setup = 0;
+                    }
+                    if(admin.role === 2){
+                        setup = 1;
+                    }
+                    const newUpdate = new nitUpdates({
+                        name: name,
+                        type: type,
+                        url: url,
+                        sem: sem,
+                        date: date,
+                        set: set,
+                        setup: setup,
+                        work: work,
+                        work2: work2,
+                        branch: branch
+                    })
+                    await newUpdate.save();
+                    res.json({ success: true, data: newUpdate});  // Use response.data to send the actual content
+                } else {
+                    res.json({ success: false });
+                }
+            } else {
+                res.json({ success: false });
+            }}catch (error) {
+                console.log(error)
+                res.json({ success: false });
+            }
+    
+});
 app.post('/getsubmitedcontent', async (req, res) => {
     const { set } = req.body;
     const token = req.cookies.token;
